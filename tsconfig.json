@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+  "lib": ["es5", "es6"],
+  "target": "es5",
+  "module": "commonjs",
+  "esModuleInterop": true,
+  "moduleResolution": "node",
+  "outDir": "./build",
+  "emitDecoratorMetadata": true,
+  "experimentalDecorators": true,
+  "sourceMap": true,
+  "strict": false,
+  "paths": {
+  "@config/*": ["./src/config/*"],
+  "@middlewares/*": ["./src/middlewares/*"]
+  },
+  "typeRoots": ["./src/@types", "node_modules/@types"]
+  }
+}

@@ -1,0 +1,152 @@
+import { getRepository } from 'typeorm';
+import { User } from '../typeorm/entities/User';
+import { Request, Response } from 'express';
+import * as jwt from 'jsonwebtoken';
+import authConfig from '../typeorm/config/authConfig';
+
+export const GetAllUsers = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const userRepository = getRepository(User);
+  try {
+    const users = await userRepository.find({
+      relations: ['roles'],
+      select: ['id', 'name', 'email'],
+    });
+
+    return res.json(users);
+  } catch (error) {
+    return res.status(500).json({ error: `Alguma coisa deu errado !${error}` });
+  }
+};
+
+export const createNewUser = async (
+  request: Request,
+  response: Response,
+): Promise<Response> => {
+  const { name, email, password } = request.body;
+
+  const userRepository = getRepository(User);
+
+  try {
+    const user = await userRepository.findOne({ where: { email } });
+
+    if (user) {
+      return response.status(409).json({ message: 'Usuario já existe' });
+    }
+    const newUser = new User();
+    newUser.name = name;
+    newUser.email = email;
+    newUser.password = password;
+    newUser.generateUUID();
+    newUser.hashPassword();
+    await userRepository.save(newUser);
+
+    return response.status(201).json({ message: 'Usuario criado com sucesso' });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ error: `Alguma coisa deu errado ${error}` });
+  }
+};
+
+export const updateUser = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const { id } = req.params;
+  const { name, email, oldPassword, password } = req.body;
+  const userRepository = getRepository(User);
+
+  try {
+    const user = await userRepository.findOne({
+      where: { id },
+      select: ['id', 'name', 'email'],
+    });
+
+    if (email !== user.email) {
+      const userExist = await userRepository.findOne({ where: { email } });
+
+      if (userExist) {
+        return res.status(400).json({
+          error: 'Usuario já está em uso',
+        });
+      }
+    }
+
+    // if (oldPassword && !user.checkIfPasswordMatch(oldPassword)) {
+    //   return res
+    //     .status(401)
+    //     .json({ error: 'A senha não coincide com a antiga' });
+    // }
+
+    user.email = email;
+    user.name = name;
+
+    await userRepository.save(user);
+    return res.json({
+      id: user.id,
+      name,
+      email,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: `Alguma coisa deu errado! ${error}` });
+  }
+};
+
+export const DeleteUser = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const { id } = req.params;
+  const userRepository = getRepository(User);
+  try {
+    const user = await userRepository.findOne({ where: { id } });
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario não encontrado' });
+    }
+    await userRepository.delete(user);
+    return res.json({ message: 'Usuário deletado com sucesso' });
+  } catch (error) {
+    return res.status(500).json({ error: 'alguma coisa deu errado' });
+  }
+};
+
+export const login = async (
+  request: Request,
+  response: Response,
+): Promise<Response> => {
+  try {
+    const { email, password } = request.body;
+    const userRepository = getRepository(User);
+    console.log(password);
+    const user = await userRepository.findOne({
+      where: { email },
+      select: ['password', 'id', 'name', 'email'],
+    });
+
+    if (!user) {
+      return response.status(404).json({ error: 'Usuario não encontrado' });
+    }
+
+    // verifica se a senha esta correta
+    if (!user.checkIfPasswordMatch(password)) {
+      return response.status(401).json({ error: 'Senha incorreta' });
+    }
+    return response.status(202).json({
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
+      token: jwt.sign({ id: user.id }, authConfig.secret, {
+        expiresIn: authConfig.expiresIn,
+      }),
+    });
+  } catch (error) {
+    return response
+      .status(500)
+      .json({ error: `Alguma coisa deu errado ${error}` });
+  }
+};
