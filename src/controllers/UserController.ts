@@ -106,47 +106,9 @@ export const DeleteUser = async (
     if (!user) {
       return res.status(404).json({ error: 'Usuario não encontrado' });
     }
-    await userRepository.delete(user);
+    await userRepository.remove(user);
     return res.json({ message: 'Usuário deletado com sucesso' });
   } catch (error) {
     return res.status(500).json({ error: 'alguma coisa deu errado' });
-  }
-};
-
-export const login = async (
-  request: Request,
-  response: Response,
-): Promise<Response> => {
-  try {
-    const { email, password } = request.body;
-    const userRepository = getRepository(User);
-    console.log(password);
-    const user = await userRepository.findOne({
-      where: { email },
-      select: ['password', 'id', 'name', 'email'],
-    });
-
-    if (!user) {
-      return response.status(404).json({ error: 'Usuario não encontrado' });
-    }
-
-    // verifica se a senha esta correta
-    if (!user.checkIfPasswordMatch(password)) {
-      return response.status(401).json({ error: 'Senha incorreta' });
-    }
-    return response.status(202).json({
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      },
-      token: jwt.sign({ id: user.id }, authConfig.secret, {
-        expiresIn: authConfig.expiresIn,
-      }),
-    });
-  } catch (error) {
-    return response
-      .status(500)
-      .json({ error: `Alguma coisa deu errado ${error}` });
   }
 };
