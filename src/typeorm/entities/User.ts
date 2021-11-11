@@ -10,6 +10,8 @@ import {
   BeforeInsert,
   Unique,
   ManyToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { Role } from './Role';
@@ -29,6 +31,12 @@ export class User {
   @Column('varchar', { select: false })
   password: string;
 
+  @CreateDateColumn()
+  created_at: string;
+
+  @UpdateDateColumn()
+  updated_at: string;
+
   generateUUID(): void {
     this.id = uuidv4();
   }
@@ -39,7 +47,11 @@ export class User {
   // ------------------------------------//
   //relacionamento many to many
   @ManyToMany(() => Role)
-  @JoinTable()
+  @JoinTable({
+    name: 'users_role_mapping',
+    joinColumns: [{ name: 'userId' }],
+    inverseJoinColumns: [{ name: 'roleId' }],
+  })
   roles: Role[];
   // ------------------------------------//
 
