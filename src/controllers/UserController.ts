@@ -1,8 +1,8 @@
 import { getRepository } from 'typeorm';
 import { User } from '../typeorm/entities/User';
 import { Request, Response } from 'express';
-import * as jwt from 'jsonwebtoken';
-import authConfig from '../typeorm/config/authConfig';
+
+//TODO -> listar user by id,
 
 export const GetAllUsers = async (
   req: Request,
@@ -14,7 +14,6 @@ export const GetAllUsers = async (
       relations: ['roles'],
       select: ['id', 'name', 'email'],
     });
-
     return res.json(users);
   } catch (error) {
     return res.status(500).json({ error: `Alguma coisa deu errado !${error}` });
