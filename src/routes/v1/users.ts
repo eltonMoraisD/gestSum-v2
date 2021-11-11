@@ -8,8 +8,9 @@ import {
 import authMiddleware from '../../middlewares/authMiddleware';
 
 const router = Router();
-router.get('/list', authMiddleware, GetAllUsers);
+
 router.post('/register', authMiddleware, createNewUser);
+router.get('/list', authMiddleware, GetAllUsers);
 router.put('/update/:id', authMiddleware, updateUser);
 router.delete('/delete/:id', authMiddleware, DeleteUser);
 
