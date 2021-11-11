@@ -8,8 +8,8 @@ export const CreateRole = async (
   res: Response,
 ): Promise<Response> => {
   const roleRepository = getRepository(Role);
-  // const permissionRepository = getRepository(Permission);
-  const { name, description, permissions } = req.body;
+  const permissionRepository = getRepository(Permission);
+  const { name, description, permission } = req.body;
   try {
     const isRoleNameExist = await roleRepository.findOne({ where: { name } });
 
@@ -18,14 +18,14 @@ export const CreateRole = async (
         .status(409)
         .json({ message: 'Este Role jã existe na base de dados' });
     }
-    // const existingPermissions = await permissionRepository.findByIds(
-    //   permissions,
-    // );
+    const existingPermissions = await permissionRepository.findByIds(
+      permission,
+    );
 
     const role = roleRepository.create({
       name,
       description,
-      // permission: existingPermissions,
+      permission: existingPermissions,
     });
     await roleRepository.save(role);
     return res.json(role);

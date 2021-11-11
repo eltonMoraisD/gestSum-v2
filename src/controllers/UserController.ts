@@ -1,6 +1,7 @@
 import { getRepository } from 'typeorm';
 import { User } from '../typeorm/entities/User';
 import { Request, Response } from 'express';
+import { Role } from '../typeorm/entities/Role';
 
 //TODO -> listar user by id,
 
@@ -20,16 +21,22 @@ export const GetAllUsers = async (
   }
 };
 
-export const createNewUser = async (
+export const CreateUser = async (
   request: Request,
   response: Response,
 ): Promise<Response> => {
-  const { name, email, password } = request.body;
+  const { name, email, password, roles } = request.body;
 
   const userRepository = getRepository(User);
-
+  const roleRepository = getRepository(Role);
   try {
     const user = await userRepository.findOne({ where: { email } });
+
+    const existingRoles = await roleRepository.findByIds(roles);
+
+    if (!existingRoles) {
+      return response.status(404).json({ error: 'Esta role não existe!' });
+    }
 
     if (user) {
       return response.status(409).json({ message: 'Usuario já existe' });
@@ -38,6 +45,7 @@ export const createNewUser = async (
     newUser.name = name;
     newUser.email = email;
     newUser.password = password;
+    newUser.roles = existingRoles;
     newUser.generateUUID();
     newUser.hashPassword();
     await userRepository.save(newUser);

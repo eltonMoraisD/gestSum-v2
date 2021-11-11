@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  createNewUser,
+  CreateUser,
   DeleteUser,
   GetAllUsers,
   updateUser,
@@ -9,7 +9,7 @@ import authMiddleware from '../../middlewares/authMiddleware';
 
 const router = Router();
 
-router.post('/register', authMiddleware, createNewUser);
+router.post('/register', authMiddleware, CreateUser);
 router.get('/list', authMiddleware, GetAllUsers);
 router.put('/update/:id', authMiddleware, updateUser);
 router.delete('/delete/:id', authMiddleware, DeleteUser);
