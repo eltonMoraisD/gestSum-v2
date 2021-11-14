@@ -17,7 +17,6 @@ async function decoder(request: Request): Promise<User | undefined> {
 
   const [, token] = authHeader.split(' ');
   const payload: JwtPayload = jwtDecode<IPayload>(token);
-  console.log('payload', payload);
 
   const user = await userRepository.findOne(payload?.sub, {
     relations: ['roles'],
