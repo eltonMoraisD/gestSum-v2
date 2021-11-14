@@ -41,6 +41,7 @@ export const ListAllRoles = async (
   const roleRepository = getRepository(Role);
   try {
     const allRoles = await roleRepository.find({
+      relations: ['permission'],
       select: ['id', 'name', 'description'],
     });
     return res.json(allRoles);

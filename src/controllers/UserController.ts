@@ -5,6 +5,13 @@ import { Role } from '../typeorm/entities/Role';
 
 //TODO -> listar user by id,
 
+interface IUser {
+  name: string;
+  email: string;
+  password: string;
+  roles: string[];
+}
+
 export const GetAllUsers = async (
   req: Request,
   res: Response,
@@ -12,7 +19,7 @@ export const GetAllUsers = async (
   const userRepository = getRepository(User);
   try {
     const users = await userRepository.find({
-      relations: ['roles'],
+      relations: ['roles', 'roles.permission'],
       select: ['id', 'name', 'email'],
     });
     return res.json(users);
@@ -25,7 +32,7 @@ export const CreateUser = async (
   request: Request,
   response: Response,
 ): Promise<Response> => {
-  const { name, email, password, roles } = request.body;
+  const { name, email, password, roles }: IUser = request.body;
 
   const userRepository = getRepository(User);
   const roleRepository = getRepository(Role);
@@ -63,7 +70,7 @@ export const updateUser = async (
   res: Response,
 ): Promise<Response> => {
   const { id } = req.params;
-  const { name, email, oldPassword, password } = req.body;
+  const { name, email }: IUser = req.body;
   const userRepository = getRepository(User);
 
   try {

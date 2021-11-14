@@ -25,6 +25,7 @@ export const login = async (
     if (!user.checkIfPasswordMatch(password)) {
       return response.status(401).json({ error: 'Senha incorreta' });
     }
+    // const roles = user.roles.map(role => role.name);
     return response.status(202).json({
       user: {
         id: user.id,
