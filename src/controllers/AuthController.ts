@@ -4,12 +4,17 @@ import { Request, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
 import authConfig from '../typeorm/config/authConfig';
 
+interface ILogin {
+  email: string;
+  password: string;
+}
+
 export const login = async (
   request: Request,
   response: Response,
 ): Promise<Response> => {
   try {
-    const { email, password } = request.body;
+    const { email, password }: ILogin = request.body;
     const userRepository = getRepository(User);
     console.log(password);
     const user = await userRepository.findOne({
@@ -25,6 +30,7 @@ export const login = async (
     if (!user.checkIfPasswordMatch(password)) {
       return response.status(401).json({ error: 'Senha incorreta' });
     }
+    // const roles = user.roles.map(role => role.name);
     return response.status(202).json({
       user: {
         id: user.id,
