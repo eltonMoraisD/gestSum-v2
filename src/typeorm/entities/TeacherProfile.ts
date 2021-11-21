@@ -2,11 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
+import { EditionDiscipline } from './EditionDiscipline';
 import { User } from './User';
 
 @Entity()
@@ -35,4 +38,8 @@ export class TeacherProfile {
 
   @OneToOne(() => User, user => user.teacherProfile, { onDelete: 'CASCADE' })
   user: User;
+
+  @OneToMany(() => EditionDiscipline, ediDisc => ediDisc.teacher)
+  @JoinColumn()
+  editionDisciplines: EditionDiscipline[];
 }

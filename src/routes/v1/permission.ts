@@ -5,10 +5,21 @@ import {
 } from '../../controllers/PermissionController';
 
 import authMiddleware from '../../middlewares/authMiddleware';
+import { hasRole } from '../../middlewares/userRoleMiddleware';
 
 const router = Router();
 
-router.post('/create', authMiddleware, CreatePermission);
-router.get('/list', authMiddleware, ListAllPermissions);
+router.post(
+  '/create',
+  hasRole(['ROLE_ADMIN']),
+  authMiddleware,
+  CreatePermission,
+);
+router.get(
+  '/list',
+  hasRole(['ROLE_ADMIN']),
+  authMiddleware,
+  ListAllPermissions,
+);
 
 export default router;

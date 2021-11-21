@@ -57,9 +57,9 @@ export class User {
   roles: Role[];
   // ------------------------------------//
 
-   //relacionamento on-to-one com teacher profile
-   @OneToOne(() => TeacherProfile, teacherProfile => teacherProfile.user, {
-    eager: true,
+  //relacionamento on-to-one com teacher profile
+  @OneToOne(() => TeacherProfile, teacherProfile => teacherProfile.user, {
+    //eager: true,
     onDelete: 'CASCADE',
   })
   @JoinColumn()
