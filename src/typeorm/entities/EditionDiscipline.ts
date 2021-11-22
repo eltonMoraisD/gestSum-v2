@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
+import { Discipline } from './Discipline';
 import { TeacherProfile } from './TeacherProfile';
 
 @Entity()
@@ -32,4 +33,11 @@ export class EditionDiscipline {
   )
   @JoinColumn()
   teacher: TeacherProfile;
+
+  @ManyToOne(() => Discipline, ediDisc => ediDisc.editionDiscipline, {
+    //eager: true,
+  })
+  @JoinColumn()
+  // disciplines: Discipline[];
+  disciplines: Discipline[] | Discipline;
 }

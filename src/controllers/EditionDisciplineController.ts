@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
+import { Discipline } from '../typeorm/entities/Discipline';
 import { EditionDiscipline } from '../typeorm/entities/EditionDiscipline';
 import { TeacherProfile } from '../typeorm/entities/TeacherProfile';
 
@@ -9,30 +10,51 @@ interface IEdiDisciplinas {
   anoLetivo: string;
   semestre: string;
   teacherId: TeacherProfile;
+  disciplinesId: Discipline[];
 }
 
 export const CreateEdicaoDisciplina = async (
   req: Request,
   res: Response,
 ): Promise<Response> => {
-  const { numEdi, estado, anoLetivo, semestre, teacherId }: IEdiDisciplinas =
-    req.body;
+  const {
+    numEdi,
+    estado,
+    anoLetivo,
+    semestre,
+    teacherId,
+    disciplinesId,
+  }: IEdiDisciplinas = req.body;
   try {
     const editionDisciplineRepository = getRepository(EditionDiscipline);
     const teacherRepository = getRepository(TeacherProfile);
+    const disciplineRepository = getRepository(Discipline);
     const teacher = await teacherRepository.findOne({
       where: { id: teacherId },
     });
-    console.log('teacher', teacher);
+
     if (teacher === undefined || !teacher) {
       return res.status(404).json({ error: `Este professor não existe!` });
     }
+
+    const discipline = await disciplineRepository.findOne({
+      where: { id: disciplinesId },
+      relations: ['editionDiscipline'],
+    });
+
+    console.log('discipline', discipline);
+
+    if (discipline === undefined || !discipline) {
+      return res.status(404).json({ error: `Esta disciplina não existe!` });
+    }
+
     const edicaoDisciplina = new EditionDiscipline();
     edicaoDisciplina.numEdi = numEdi;
     edicaoDisciplina.estado = estado;
     edicaoDisciplina.anoLetivo = anoLetivo;
     edicaoDisciplina.semestre = semestre;
     edicaoDisciplina.teacher = teacher;
+    edicaoDisciplina.disciplines = discipline;
 
     await editionDisciplineRepository.save(edicaoDisciplina);
 
@@ -47,8 +69,14 @@ export const UpdateEdicaoDisciplina = async (
   res: Response,
 ): Promise<Response> => {
   const { id } = req.params;
-  const { numEdi, estado, anoLetivo, semestre, teacherId }: IEdiDisciplinas =
-    req.body;
+  const {
+    numEdi,
+    estado,
+    anoLetivo,
+    semestre,
+    teacherId,
+    disciplinesId,
+  }: IEdiDisciplinas = req.body;
   const editionDisciplineRepository = getRepository(EditionDiscipline);
   const teacherRepository = getRepository(TeacherProfile);
   const teacher = await teacherRepository.findOne({
@@ -73,7 +101,7 @@ export const UpdateEdicaoDisciplina = async (
     editionDisc.anoLetivo = anoLetivo;
     editionDisc.semestre = semestre;
     editionDisc.teacher = teacher;
-
+    editionDisc.disciplines = disciplinesId;
     await editionDisciplineRepository.save(editionDisc);
 
     return res.json(editionDisc);
