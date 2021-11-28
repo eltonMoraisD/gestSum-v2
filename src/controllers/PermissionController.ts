@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import { Permission } from '../typeorm/entities/Permission';
 
+//TODO - list permission by id, delete permission, update permission
+
 export const CreatePermission = async (
   req: Request,
   res: Response,
@@ -45,5 +47,3 @@ export const ListAllPermissions = async (
     return res.status(500).json({ error: `Alguma coisa deu errado! ${error}` });
   }
 };
-
-//TODO - list permission by id, delete permission, update permission

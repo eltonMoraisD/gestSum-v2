@@ -45,7 +45,12 @@ export const GetAllTeachers = async (
 
   try {
     const allTeachers = await teacherRepository.find({
-      relations: ['user', 'editionDisciplines'],
+      relations: [
+        'user',
+        'editionDisciplines',
+        'editionDisciplines.lesson',
+        'editionDisciplines.lesson.summary',
+      ],
     });
     return res.json(allTeachers);
   } catch (error) {
@@ -63,7 +68,7 @@ export const GetTeacher = async (
   try {
     const teacher = await teacherRepository.findOne({
       where: { id },
-      relations: ['user', 'editionDisciplines'],
+      relations: ['user', 'editionDisciplines', 'editionDisciplines.lesson'],
     });
     if (!teacher) {
       return res.status(404).json({ error: 'Este perfil não foi encontrado' });

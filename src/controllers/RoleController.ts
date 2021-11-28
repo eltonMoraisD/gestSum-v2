@@ -3,6 +3,8 @@ import { getRepository } from 'typeorm';
 import { Permission } from '../typeorm/entities/Permission';
 import { Role } from '../typeorm/entities/Role';
 
+//TODO - list roles by id, delete role, update role
+
 export const CreateRole = async (
   req: Request,
   res: Response,
@@ -49,5 +51,3 @@ export const ListAllRoles = async (
     return res.status(500).json({ error: `Alguma coisa deu errado! ${error}` });
   }
 };
-
-//TODO - list roles by id, delete role, update role

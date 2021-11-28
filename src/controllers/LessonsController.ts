@@ -38,7 +38,9 @@ export const GetAllLessons = async (
   const lessonRepository = getRepository(Lesson);
 
   try {
-    const lessons = await lessonRepository.find();
+    const lessons = await lessonRepository.find({
+      relations: ['summary'],
+    });
 
     return res.json(lessons);
   } catch (error) {
@@ -54,7 +56,10 @@ export const GetOneLesson = async (
   const lessonRepository = getRepository(Lesson);
 
   try {
-    const lesson = await lessonRepository.findOne({ where: { id } });
+    const lesson = await lessonRepository.findOne({
+      where: { id },
+      relations: ['summary'],
+    });
     if (lesson === undefined || !lesson) {
       return res.status(404).json({ error: 'Aula não encontrada' });
     }

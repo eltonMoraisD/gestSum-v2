@@ -3,8 +3,6 @@ import { User } from '../typeorm/entities/User';
 import { Request, Response } from 'express';
 import { Role } from '../typeorm/entities/Role';
 
-//TODO -> listar user by id,
-
 interface IUser {
   name: string;
   email: string;
@@ -24,45 +22,46 @@ export const GetAllUsers = async (
       select: ['id', 'name', 'email'],
     });
 
-      
     return res.json(users);
   } catch (error) {
     return res.status(500).json({ error: `Alguma coisa deu errado !${error}` });
   }
 };
 
-export const GetUser = async( req: Request, res: Response): Promise<Response> => {
-  const {id} = req.params;
+export const GetUser = async (
+  req: Request,
+  res: Response,
+): Promise<Response> => {
+  const { id } = req.params;
   const userRepository = getRepository(User);
   try {
-    const user = await userRepository.findOne({where: {id},  relations: ['roles', 'roles.permission']})
+    const user = await userRepository.findOne({
+      where: { id },
+      relations: ['roles', 'roles.permission'],
+    });
 
-    
-
-    if(!user){
-      return res.status(404).json({error: "Usuario não encontrado"})
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario não encontrado' });
     }
 
-    res.json(user)
-    
-  } catch (error) {
-    
-  }
-}
+    return res.json(user);
+  } catch (error) {}
+};
 
 export const CreateUser = async (
   request: Request,
   response: Response,
-): Promise<Response > => {
-  const { name, email, password, roles ,teacherProfileId}: IUser = request.body;
-  console.log("teacherProfileId",teacherProfileId)
+): Promise<Response> => {
+  const { name, email, password, roles, teacherProfileId }: IUser =
+    request.body;
+  console.log('teacherProfileId', teacherProfileId);
 
   const userRepository = getRepository(User);
   const roleRepository = getRepository(Role);
   try {
     const user = await userRepository.findOne({ where: { email } });
     const existingRoles = await roleRepository.findByIds(roles);
-    
+
     if (!existingRoles) {
       return response.status(404).json({ error: 'Esta role não existe!' });
     }
@@ -93,10 +92,9 @@ export const updateUser = async (
   res: Response,
 ): Promise<Response> => {
   const { id } = req.params;
-  const { name, email,roles, teacherProfileId}: IUser = req.body;
+  const { name, email, roles, teacherProfileId }: IUser = req.body;
   const userRepository = getRepository(User);
   const roleRepository = getRepository(Role);
-
 
   try {
     const user = await userRepository.findOne({
@@ -114,11 +112,11 @@ export const updateUser = async (
       }
     }
     // if (oldPassword && !user.checkIfPasswordMatch(oldPassword)) {
-      //   return res
-      //     .status(401)
-      //     .json({ error: 'A senha não coincide com a antiga' });
-      // }
-      
+    //   return res
+    //     .status(401)
+    //     .json({ error: 'A senha não coincide com a antiga' });
+    // }
+
     const existingRoles = await roleRepository.findByIds(roles);
     if (!existingRoles) {
       return res.status(404).json({ error: 'Esta role não existe!' });
@@ -128,7 +126,7 @@ export const updateUser = async (
     user.name = name;
     user.roles = existingRoles;
     user.teacherProfile = teacherProfileId;
-    
+
     await userRepository.save(user);
     return res.json({
       id: user.id,

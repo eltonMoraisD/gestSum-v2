@@ -149,7 +149,7 @@ export const GetAllEdition = async (
 
   try {
     const ediDisci = await editionDisciplineRepository.find({
-      relations: ['teacher', 'lesson'],
+      relations: ['teacher', 'lesson', 'lesson.summary'],
     });
     return res.json(ediDisci);
   } catch (error) {
@@ -166,7 +166,7 @@ export const GetEditionDiscipline = async (
   try {
     const editionDisc = await editionDisciplineRepository.findOne({
       where: { id },
-      relations: ['teacher', 'lesson'],
+      relations: ['teacher', 'lesson', 'lesson.summary'],
     });
     if (editionDisc === undefined) {
       return res

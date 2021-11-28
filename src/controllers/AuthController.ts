@@ -16,7 +16,6 @@ export const login = async (
   try {
     const { email, password }: ILogin = request.body;
     const userRepository = getRepository(User);
-    console.log(password);
     const user = await userRepository.findOne({
       where: { email },
       select: ['password', 'id', 'name', 'email'],

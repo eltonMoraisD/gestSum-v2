@@ -4,11 +4,13 @@ import {
   Entity,
   JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
 import { EditionDiscipline } from './EditionDiscipline';
+import { Summary } from './Summary';
 
 @Entity()
 @Unique(['id'])
@@ -40,4 +42,7 @@ export class Lesson {
   @OneToMany(() => EditionDiscipline, dis => dis.lesson)
   @JoinColumn()
   editionDiscipline: EditionDiscipline;
+
+  @OneToOne(() => Summary, summary => summary.lesson, { onDelete: 'CASCADE' })
+  summary: Summary;
 }
