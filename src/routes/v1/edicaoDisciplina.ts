@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  CreateEdicaoDisciplina,
+  CreateEditionDiscipline,
   DeleteEditionDiscipline,
   GetAllEdition,
   GetEditionDiscipline,
@@ -16,7 +16,7 @@ router.post(
   '/create',
   hasRole(['ROLE_ADMIN']),
   authMiddleware,
-  CreateEdicaoDisciplina,
+  CreateEditionDiscipline,
 );
 router.get('/all', hasRole(['ROLE_ADMIN']), authMiddleware, GetAllEdition);
 router.get(
