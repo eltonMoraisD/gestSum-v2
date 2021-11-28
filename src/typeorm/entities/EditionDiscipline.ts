@@ -3,10 +3,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
 import { Discipline } from './Discipline';
+import { Lesson } from './Lesson';
 import { TeacherProfile } from './TeacherProfile';
 
 @Entity()
@@ -38,6 +40,9 @@ export class EditionDiscipline {
     //eager: true,
   })
   @JoinColumn()
-  // disciplines: Discipline[];
   disciplines: Discipline[] | Discipline;
+
+  @ManyToOne(() => Lesson, lesson => lesson.editionDiscipline)
+  @JoinColumn()
+  lesson: Lesson;
 }
