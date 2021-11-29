@@ -30,10 +30,10 @@ export class TeacherProfile {
   @Column('varchar')
   degree: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   created_at: string;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ select: false })
   updated_at: string;
 
   @OneToOne(() => User, user => user.teacherProfile, { onDelete: 'CASCADE' })

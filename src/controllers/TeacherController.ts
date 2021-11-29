@@ -68,7 +68,12 @@ export const GetTeacher = async (
   try {
     const teacher = await teacherRepository.findOne({
       where: { id },
-      relations: ['user', 'editionDisciplines', 'editionDisciplines.lesson'],
+      relations: [
+        'user',
+        'editionDisciplines',
+        'editionDisciplines.lesson',
+        'editionDisciplines.lesson.summary',
+      ],
     });
     if (!teacher) {
       return res.status(404).json({ error: 'Este perfil não foi encontrado' });

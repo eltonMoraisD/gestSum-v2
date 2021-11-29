@@ -19,9 +19,9 @@ export class Permission {
   @Column()
   description: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   created_at: string;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ select: false })
   updated_at: string;
 }

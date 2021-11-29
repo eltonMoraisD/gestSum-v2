@@ -25,10 +25,10 @@ export class Role {
   @Column('varchar', { unique: true })
   description: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   created_at: string;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ select: false })
   updated_at: string;
 
   @ManyToMany(() => Permission)

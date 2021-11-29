@@ -28,10 +28,10 @@ export class Summary {
   @Column()
   isValidate: boolean;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   created_at: string;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ select: false })
   updated_at: string;
 
   @OneToOne(() => Lesson, lesson => lesson.summary, { onDelete: 'CASCADE' })
