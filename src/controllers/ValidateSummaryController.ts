@@ -16,8 +16,6 @@ export const ValidateSummary = async (
       await summaryRepository.save(summary);
       return res.json({ message: 'sumario validado com sucesso', summary });
     } else {
-      summary.isValidate = isValidate;
-      await summaryRepository.save(summary);
       return res.json({ message: 'Sumario invalidado' });
     }
   } catch (error) {
