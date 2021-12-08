@@ -9,6 +9,7 @@ import edicaoDisciplina from './edicaoDisciplina';
 import discipline from './discipline';
 import lesson from './lesson';
 import summary from './summary';
+import validateSummary from './validateSummary';
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.use('/edition-discipline', edicaoDisciplina);
 router.use('/discipline', discipline);
 router.use('/lesson', lesson);
 router.use('/summary', summary);
+router.use('/summary', validateSummary);
 
 export default router;
